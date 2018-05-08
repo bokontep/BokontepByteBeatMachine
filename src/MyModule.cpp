@@ -29,7 +29,7 @@ struct BokontepByteBeatModule : Module {
 	};
 	const char* cmd_eval = "([1.122,1.259,1.498,1.681,1.887][((t >> 12) ^ ((t >> 10)+ 3561)) %5]) * t & 128 | (([1.122,1.259,1.498,1.681,1.887][((t >> 11) ^ ((t >> 9) +2137)) %5]) * t) & ((t>>14)%120+8) | (t>>4) ;";
 	const char* func_t2 = "function f(t){var r= (([1.122,1.259,1.498,1.681,1.887][((t >> 12) ^ ((t >> 10)+ 3561)) %5]) * t & 128 | (([1.122,1.259,1.498,1.681,1.887][((t >> 11) ^ ((t >> 9) +2137)) %5]) * t) & ((t>>14)%120+8) | (t>>4) ); return r;}";
-
+	
 	float accumulator = 0.0f;
 	float timestep = 1.0/4000.0f;
 	TextField* textField;
@@ -73,7 +73,8 @@ struct BokontepByteBeatModule : Module {
 void BokontepByteBeatModule::step() {
 	// Implement a simple sine oscillator
 	float deltaTime = engineGetSampleTime();
-	
+	int x = 0;
+	int y = 0;
 	if(inputs[TRIG_INPUT].value && running)
 	{
 		
@@ -82,6 +83,8 @@ void BokontepByteBeatModule::step() {
 			
 		
 	}
+	x=(uint8_t)(((inputs[X_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
+	y=(uint8_t)(((inputs[Y_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
 	
 	
 	// The default pitch is C4
@@ -95,7 +98,9 @@ void BokontepByteBeatModule::step() {
 		
 		duk_dup(ctx, 0);
 		duk_push_int(ctx, t);
-		duk_call(ctx, 1);
+		duk_push_int(ctx, x);
+		duk_push_int(ctx, y);
+		duk_call(ctx, 3);
 		retval = (uint8_t)duk_get_int_default(ctx, 1, 0);
 		duk_pop(ctx);
 			
