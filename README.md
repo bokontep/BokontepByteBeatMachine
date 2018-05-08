@@ -10,7 +10,7 @@ Demo video here:
 Some kind of manual
 ===================
 
-![alt text](https://github.com/bokontep/BokontepByteBeatMachine/bytebeatmachine.png "BokontepByteBeatMachine on VCVRack")  
+![alt text](bytebeatmachine.png "BokontepByteBeatMachine on VCVRack")  
 BokontepByteBeatMachine is an 8bit, 8000 Hz javascript oscillator. You can enter a javascript expression in the textbox 
 (better write it in a text editor if is more than one line and paste it there), right click on the context menu and select initialize (or just press CTRL+I)
 to compile the expression. If the expression is compiled successfully the red led over the textarea with the javascript turns to red.
