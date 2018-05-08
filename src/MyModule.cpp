@@ -34,6 +34,7 @@ struct BokontepByteBeatModule : Module {
 	float timestep = 1.0/4000.0f;
 	TextField* textField;
 	bool running = false;
+	bool compiled = false;
 	SchmittTrigger trigger;
 	float phase = 0.0;
 	float blinkPhase = 0.0;
@@ -52,12 +53,14 @@ struct BokontepByteBeatModule : Module {
 	{
 		ctx = duk_create_heap_default();
 		//textField->text = "t = t+1;";
+		running = false;
 		if (duk_pcompile_string(ctx, DUK_COMPILE_FUNCTION,textField->text.c_str())==0)
 		{
-				running = true;
+				compiled = true;
 		}
 		else
 		{
+			compiled = false;
 			running = false;
 		}
 			
@@ -75,12 +78,12 @@ void BokontepByteBeatModule::step() {
 	float deltaTime = engineGetSampleTime();
 	int x = 0;
 	int y = 0;
-	if(inputs[TRIG_INPUT].value && running)
+	if(inputs[TRIG_INPUT].value && compiled)
 	{
 		
 		t = 0;
 		accumulator = 0.0f;
-			
+		running = true;	
 		
 	}
 	x=(uint8_t)(((inputs[X_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
