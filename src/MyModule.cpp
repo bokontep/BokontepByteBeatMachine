@@ -28,12 +28,13 @@ struct BokontepByteBeatModule : Module {
 		TRIGGER_LIGHT,
 		NUM_LIGHTS
 	};
-	char javascriptBuffer[512];
-	const char* header = "function f(t,X,Y){return (";
-	const char* footer = ");}";
 	
+	
+	char javascriptBuffer[512];
+	const char* header = "function f(t,X,Y)	{ return (";
+	const char* footer = "); } ";
 	float accumulator = 0.0f;
-	float timestep = 1.0/4000.0f;
+	float timestep = 1.0/8000.0f;
 	TextField* textField;
 	bool running = false;
 	bool compiled = false;
@@ -41,7 +42,7 @@ struct BokontepByteBeatModule : Module {
 	float phase = 0.0;
 	float blinkPhase = 0.0;
 	int t = 0;
-	duk_context *ctx;
+	duk_context *ctx = NULL;
 	BokontepByteBeatModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
 		
 	}
@@ -53,7 +54,15 @@ struct BokontepByteBeatModule : Module {
 	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 	void onCreate () override
 	{
-		ctx = duk_create_heap_default();
+		if(ctx)
+		{
+			duk_destroy_heap(ctx);
+			ctx = duk_create_heap_default();
+		}
+		else
+		{
+			ctx = duk_create_heap_default();
+		}
 		//textField->text = "t = t+1;";
 		running = false;
 		if(strlen(textField->text.c_str())<512)
@@ -78,6 +87,17 @@ struct BokontepByteBeatModule : Module {
 		
 			
 	}
+	void onDelete() override
+	{
+		if(ctx)
+		{
+			duk_destroy_heap(ctx);
+		}
+		if(!ctx)
+		{
+			ctx = NULL;
+		}
+	}
 	void onReset () override
 	{
 		onCreate();
@@ -87,7 +107,7 @@ struct BokontepByteBeatModule : Module {
 
 
 void BokontepByteBeatModule::step() {
-	// Implement a simple sine oscillator
+	// Implement a bytebeat oscillator
 	float deltaTime = engineGetSampleTime();
 	int x = 0;
 	int y = 0;
@@ -95,6 +115,7 @@ void BokontepByteBeatModule::step() {
 	{
 		
 		t = 0;
+		
 		accumulator = 0.0f;
 		running = true;	
 		
@@ -104,12 +125,14 @@ void BokontepByteBeatModule::step() {
 	y=(uint8_t)(((inputs[Y_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
 	
 	
-	// The default pitch is C4
+	
 	accumulator = accumulator + deltaTime;
 	t = accumulator/timestep;
 	
-	// Compute the sine output
+	
+	// Compute the output
 	int retval = 0;
+	
 	if(running)
 	{
 		
@@ -166,6 +189,7 @@ struct BokontepByteBeatWidget : ModuleWidget {
 		textField = Widget::create<LedDisplayTextField>(mm2px(Vec(3, 42)));
 		textField->box.size = mm2px(Vec(85, 40));
 		textField->multiline = true;
+		
 		addChild(textField);
 		module->textField = this->textField;
 	}
