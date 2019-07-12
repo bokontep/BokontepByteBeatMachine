@@ -1,0 +1,25 @@
+{
+  "slug": "Bokontep",
+  "name": "Bokontep",
+  "version": "1.0.1",
+  "license": "BSD-3-Clause",
+  "brand": "ВОКОИТЕР",
+  "author": "bokontep",
+  "authorEmail": "bokontep@gmail.com",
+  "authorUrl": "https://bokontep.blogspot.gr",
+  "pluginUrl": "https://github.com/bokontep/BokontepByteBeatMachine",
+  "manualUrl": "http://bokontep.blogspot.com/2018/05/bokontepbytebeatmachine-plugin-for.html",
+  "sourceUrl": "https://github.com/bokontep/BokontepByteBeatMachine",
+  "donateUrl": "https://www.paypal.me/AnastasiosKleisas",
+  "modules": [
+    {
+      "slug": "ModuleByteBeatMachine",
+      "name": "ByteBeatMachine",
+      "description": "ByteBeat Oscillator",
+      "tags": [
+        "VCO",
+        "Utility"
+      ]
+    }
+  ]
+}
